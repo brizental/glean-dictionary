@@ -20,6 +20,10 @@ ANNOTATIONS_URL = os.getenv(
 NAMESPACES_URL = os.getenv(
     "NAMESPACES_URL", "https://raw.githubusercontent.com/mozilla/looker-hub/main/namespaces.yaml"
 )
+FIREFOX_PRODUCT_DETAIL_URL = os.getenv(
+    "FIREFOX_PRODUCT_DETAIL_URL",
+    "https://product-details.mozilla.org/1.0/firefox_history_major_releases.json",
+)
 
 # Priority for getting metric data (use the later definitions of nightly over release)
 METRIC_CHANNEL_PRIORITY = {"nightly": 1, "beta": 2, "release": 3, "esr": 4}
@@ -99,6 +103,19 @@ def get_app_variant_description(app):
     if app.app.get("deprecated"):
         description = f"[Deprecated] {description}"
     return description
+
+
+def get_expiry_date(expiry, app_name):
+    latest_release_version = [*requests.get(FIREFOX_PRODUCT_DETAIL_URL).json()][-1]
+
+    desktop_expiry_description = f"{expiry}. Latest release is \
+    [{latest_release_version}](https://wiki.mozilla.org/Release_Management/Calendar)"
+
+    if expiry == "never":
+        return expiry
+    if app_name == "firefox_desktop":
+        return desktop_expiry_description
+    return expiry
 
 
 def main():
@@ -283,7 +300,7 @@ def main():
                             if "extra_keys" in metric.definition
                             else None,
                             type=metric.definition["type"],
-                            expires=metric.definition["expires"],
+                            expires=get_expiry_date(metric.definition["expires"], app_name),
                         ),
                         metric_annotation,
                     )
@@ -310,6 +327,7 @@ def main():
                                 send_in_pings=list(metric.definition["send_in_pings"]),
                                 repo_url=app.app["url"],
                                 variants=[],
+                                expires=base_definition["expires"],
                             ),
                             metric_annotation,
                             full=True,

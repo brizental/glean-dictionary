@@ -203,7 +203,7 @@ export const METRIC_METADATA_SCHEMA = [
   },
   {
     title: "Expires",
-    id: "expires",
+    id: "expiry_text",
     type: "markdown",
     helpText:
       "When the metric is set to expire. After a metric expires, an application will no longer collect or send data related to it.",

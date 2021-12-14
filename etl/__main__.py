@@ -12,6 +12,7 @@ from .bigquery import get_bigquery_column_name, get_bigquery_ping_table_name
 from .glam import get_glam_metadata_for_metric
 from .glean import GleanApp
 from .looker import get_looker_explore_metadata_for_metric, get_looker_explore_metadata_for_ping
+from .expiry import get_expiry_date, get_expiry_text
 
 OUTPUT_DIRECTORY = os.path.join("public", "data")
 ANNOTATIONS_URL = os.getenv(
@@ -105,23 +106,11 @@ def get_app_variant_description(app):
     return description
 
 
-def get_expiry_date(expiry, app_name):
-    latest_release_version = [*requests.get(FIREFOX_PRODUCT_DETAIL_URL).json()][-1]
-
-    desktop_expiry_description = f"{expiry}. Latest release is \
-    [{latest_release_version}](https://wiki.mozilla.org/Release_Management/Calendar)"
-
-    if expiry == "never":
-        return expiry
-    if app_name == "firefox_desktop":
-        return desktop_expiry_description
-    return expiry
-
-
 def main():
     # Pull down the annotations
     annotations_index = requests.get(ANNOTATIONS_URL).json()
     looker_namespaces = yaml.safe_load(requests.get(NAMESPACES_URL).text)
+    product_details = requests.get(FIREFOX_PRODUCT_DETAIL_URL).json()
 
     # Then, get the apps we're using
     apps = [app for app in GleanApp.get_apps()]
@@ -300,7 +289,12 @@ def main():
                             if "extra_keys" in metric.definition
                             else None,
                             type=metric.definition["type"],
-                            expires=get_expiry_date(metric.definition["expires"], app_name),
+                            expiry_date=get_expiry_date(
+                                metric.definition["expires"], app_name, product_details
+                            ),
+                            expiry_text=get_expiry_text(
+                                metric.definition["expires"], app_name, product_details
+                            ),
                         ),
                         metric_annotation,
                     )
@@ -327,7 +321,8 @@ def main():
                                 send_in_pings=list(metric.definition["send_in_pings"]),
                                 repo_url=app.app["url"],
                                 variants=[],
-                                expires=base_definition["expires"],
+                                expiry_date=base_definition["expiry_date"],
+                                expiry_text=base_definition["expiry_text"],
                             ),
                             metric_annotation,
                             full=True,

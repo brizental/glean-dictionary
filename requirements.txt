@@ -34,6 +34,7 @@ click==8.0.3 \
 flake8==4.0.1 \
     --hash=sha256:479b1304f72536a55948cb40a32dce8bb0ffe3501e26eaf292c7e60eb5e0428d \
     --hash=sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d
+    # via pytest-flake8
 furl==2.1.3 \
     --hash=sha256:5a6188fe2666c484a12159c18be97a1977a71d632ef5bb867ef15f54af39cc4e \
     --hash=sha256:9ab425062c4217f9802508e45feb4a83e54324273ac4b202f1850363309666c0
@@ -113,6 +114,7 @@ pytest==6.2.5 \
     #   -r requirements.in
     #   pytest-black
     #   pytest-flake8
+    #   pytest-isort
 pytest-black==0.3.12 \
     --hash=sha256:1d339b004f764d6cd0f06e690f6dd748df3d62e6fe1a692d6a5500ac2c5b75a5
     # via -r requirements.in
@@ -120,9 +122,9 @@ pytest-flake8==1.0.7 \
     --hash=sha256:c28cf23e7d359753c896745fd4ba859495d02e16c84bac36caa8b1eec58f5bc1 \
     --hash=sha256:f0259761a903563f33d6f099914afef339c085085e643bee8343eb323b32dd6b
     # via -r requirements.in
-pytest-isort==2.0.0 \
-    --hash=sha256:821a8c5c9c4f3a3c52cfa9c541fbe89ac9e28728125125af53724c4c3f129117 \
-    --hash=sha256:ab949c593213dad38ba75db32a0ce361fcddd11d4152be4a2c93b85104cc4376
+pytest-isort==3.1.0 \
+    --hash=sha256:067801dc5e54a474330d074d521c815948ff6d5cf0ed3b9d057b78216851186c \
+    --hash=sha256:13e68d84b35d4f79d20d3d165f491bffc9e4b9509f420381a4186118c4454bd3
     # via -r requirements.in
 pyyaml==6.0 \
     --hash=sha256:0283c35a6a9fbf047493e3a0ce8d79ef5030852c51e9d911a27badfde0605293 \
